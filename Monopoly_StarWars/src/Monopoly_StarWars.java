@@ -26,10 +26,10 @@ public class Monopoly_StarWars {
 		
 		while(juego) {
 			if(turnoPersonaje1) {
+				ASCIICambioDeTurno();
 				while(nuevoTurno) {
 					nuevoTurno = false;
 					ChecarSiEnBancarrota(1);
-					ASCIICambioDeTurno();
 					System.out.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador1);
 					System.out.println("Saldo actual: $" + cuentaJugador1 + " Wupiupis\n");
 					posJugador1 += AvanzarCasillas();
@@ -40,37 +40,11 @@ public class Monopoly_StarWars {
 						vuelta = false;
 					}
 					InfoCasilla(posJugador1, 1);
-					if(!EsCasillaEspecial(posJugador1)) {
-						if(!casillaComprada[posJugador1]) {
-							System.out.println("Esta casilla no está comprada.\nPrecio de la casilla: $" + precioCasilla[posJugador1]);
-							//QUIERES COMPRAR SI O NO
-							System.out.println("¿Deseas comprar esta casilla? (Si o No)");
-							adelante = reader.next();
-							adelante = adelante.toUpperCase();
-							while(!band) {
-								if(adelante.equals("SI")) {
-									ComprarCasilla(posJugador1, jugador1);
-									cuentaJugador1 -= precioCasilla[posJugador1];
-									band = true;
-								} else if (adelante.equals("NO")) {
-									band = true;
-									break;
-								} else {
-									System.out.println("Favor de solo ingresar 'si' o 'no'");
-									adelante = reader.next();
-									adelante = adelante.toUpperCase();
-								}
-							}
-							band = false;
-						} else {
-							System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
-							if(!propietarioCasilla[posJugador1].equals(jugador1)) {
-								System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador1] + " al jugador 2.");
-								cuentaJugador1 -= alquilerCasilla[posJugador1];
-								cuentaJugador2 += alquilerCasilla[posJugador1];
-							}
-						}
+					ComprarCasilla(1);
+					while(!band) {
+						Menu(1);	
 					}
+					band = false;
 				}
 				nuevoTurno = true;
 				//FIN de TURNO
@@ -78,10 +52,10 @@ public class Monopoly_StarWars {
 				turnoPersonaje2 = true;
 				
 			} else if(turnoPersonaje2) {
+				ASCIICambioDeTurno();
 				while(nuevoTurno) {
 					nuevoTurno = false;
 					ChecarSiEnBancarrota(2);
-					ASCIICambioDeTurno();
 					System.out.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador2);
 					System.out.println("Saldo actual: $" + cuentaJugador2 + " Wupiupis");
 					posJugador2 += AvanzarCasillas();
@@ -92,37 +66,11 @@ public class Monopoly_StarWars {
 						vuelta = false;
 					}
 					InfoCasilla(posJugador2, 2);
-					if(!EsCasillaEspecial(posJugador2)) {
-						if(!casillaComprada[posJugador2]) {
-							System.out.println("Esta casilla no está comprada.\nPrecio de la casilla: $" + precioCasilla[posJugador2]);
-							//QUIERES COMPRAR SI O NO
-							System.out.println("¿Deseas comprar esta casilla? (Si o No)");
-							adelante = reader.next();
-							adelante = adelante.toUpperCase();
-							while(!band) {
-								if(adelante.equals("SI")) {
-									ComprarCasilla(posJugador2, jugador2);
-									cuentaJugador2 -= precioCasilla[posJugador2];
-									band = true;
-								} else if (adelante.equals("NO")) {
-									band = true;
-									break;
-								} else {
-									System.out.println("Favor de solo ingresar 'si' o 'no'");
-									adelante = reader.next();
-									adelante = adelante.toUpperCase();
-								}
-							}
-							band = false;
-						} else {
-							System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
-							if(!propietarioCasilla[posJugador2].equals(jugador2)) {
-								System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador2] + " al jugador 1.");
-								cuentaJugador2 -= alquilerCasilla[posJugador2];
-								cuentaJugador1 += alquilerCasilla[posJugador2];
-							}
-						}
+					ComprarCasilla(2);
+					while(!band) {
+						Menu(2);	
 					}
+					band = false;
 				}
 				
 				nuevoTurno = true;
@@ -139,10 +87,65 @@ public class Monopoly_StarWars {
 	 *     Funciones
 	 */
 	
-	//Casillas de Impuesto
-		public static void CasillasImpuestos() {
-			
+	//Menu por turno
+	public static void Menu(int jugador) {
+		int opcion, numeroDePropiedades = 1;
+		System.out.println("\n¿Qué desea hacer?");
+		/*
+		 * GOD MODE
+		 */
+		System.out.println("4. GOD MODE");
+		if(jugador==1) {
+				System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Terminar turno");
+				opcion = reader.nextInt();
+				switch (opcion) {
+				case 1: for(int i=0;i<propietarioCasilla.length;i++) {
+							if(propietarioCasilla[i].equals(jugador1)) {
+								System.out.println(numeroDePropiedades + ". " + nombreCasilla[i] + ". Numero de casilla: " + numeroCasilla[i]);
+								numeroDePropiedades++;
+							}
+						}
+						break;
+				case 2: System.out.println("Tu saldo es: $" + cuentaJugador1);
+						break;
+				case 3: band = true;
+						break;
+				/*
+				 * GOD MODE
+				 */
+				case 4: System.out.print("A que casilla quiere ir: ");
+						opcion = reader.nextInt();
+						posJugador1 = opcion;
+						InfoCasilla(posJugador1, 1);
+						ComprarCasilla(1);
+				}
+		} else if (jugador==2) {
+			System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Terminar turno");
+				
+			opcion = reader.nextInt();
+			switch (opcion) {
+			case 1: for(int i=0;i<propietarioCasilla.length;i++) {
+						if(propietarioCasilla[i].equals(jugador2)) {
+							System.out.println(numeroDePropiedades + ". " + nombreCasilla[i] + ". Numero de casilla: " + numeroCasilla[i]);
+							numeroDePropiedades++;
+						}
+					}
+					break;
+			case 2: System.out.println("Tu saldo es: $" + cuentaJugador2);
+					break;
+			case 3: band = true;
+					break;
+			/*
+			 * GOD MODE
+			 */
+			case 4: System.out.print("A que casilla quiere ir: ");
+					opcion = reader.nextInt();
+					posJugador2 = opcion;
+					InfoCasilla(posJugador2, 2);
+					ComprarCasilla(2);
+			}
 		}
+	}
 	
 	//Tirar un dado
 	public static int Dado() {
@@ -152,6 +155,15 @@ public class Monopoly_StarWars {
 			dado = (int) Math.floor((Math.random()*6)+1);
 		}
 		return dado;
+	}
+	
+	public static int TirarDados() {
+		System.out.println("Presiona una tecla y enter para tirar dados: ");
+		adelante = reader.next();
+		int dado1 = Dado();
+		int dado2 = Dado();
+		int result = dado1+dado2;
+		return result;
 	}
 	
 	//Tirar dados p/turno
@@ -181,8 +193,7 @@ public class Monopoly_StarWars {
 		if((numeroCasilla[posicion] == 2) || (numeroCasilla[posicion] == 17) || (numeroCasilla[posicion] == 33) ||
 		   (numeroCasilla[posicion] == 7) || (numeroCasilla[posicion] == 22) || (numeroCasilla[posicion] == 36) ||
 		   (numeroCasilla[posicion] == 4) || (numeroCasilla[posicion] == 38) || (numeroCasilla[posicion] == 10) ||
-		   (numeroCasilla[posicion] == 30)|| (numeroCasilla[posicion] == 20) || (numeroCasilla[posicion] == 0) ||
-		   (numeroCasilla[posicion] == 12)|| (numeroCasilla[posicion] == 28)){
+		   (numeroCasilla[posicion] == 30)|| (numeroCasilla[posicion] == 20) || (numeroCasilla[posicion] == 0)) {
 			return true;
 		} else {
 			return false;
@@ -236,98 +247,54 @@ public class Monopoly_StarWars {
 			//Servicios
 			if(!casillaComprada[posicion]) {
 				if(jugador==1) {	
-					System.out.println("Esta casilla no está comprada.\nPrecio de la casilla: $" + precioCasilla[posJugador1]);
-					//QUIERES COMPRAR SI O NO
-					System.out.println("¿Deseas comprar esta casilla? (Si o No)");
-					adelante = reader.next();
-					adelante = adelante.toUpperCase();
-					while(!band) {
-						if(adelante.equals("SI")) {
-							ComprarCasilla(posJugador1, jugador1);
-							cuentaJugador1 -= precioCasilla[posJugador1];
-							band = true;
-						} else if (adelante.equals("NO")) {
-							band = true;
-							break;
-						} else {
-							System.out.println("Favor de solo ingresar 'si' o 'no'");
-							adelante = reader.next();
-							adelante = adelante.toUpperCase();
-						}
-					}
-					band = false;
+					ComprarCasilla(1);
 				} else if(jugador==2) {
-					if(!casillaComprada[posJugador2]) {
-						System.out.println("Esta casilla no está comprada.\nPrecio de la casilla: $" + precioCasilla[posJugador2]);
-						//QUIERES COMPRAR SI O NO
-						System.out.println("¿Deseas comprar esta casilla? (Si o No)");
-						adelante = reader.next();
-						adelante = adelante.toUpperCase();
-						while(!band) {
-							if(adelante.equals("SI")) {
-								ComprarCasilla(posJugador2, jugador2);
-								cuentaJugador2 -= precioCasilla[posJugador2];
-								band = true;
-							} else if (adelante.equals("NO")) {
-								band = true;
-								break;
-							} else {
-								System.out.println("Favor de solo ingresar 'si' o 'no'");
-								adelante = reader.next();
-								adelante = adelante.toUpperCase();
+					ComprarCasilla(2);
+				} 
+			} else if (casillaComprada[posicion]) {
+					if(jugador==1) {
+						//System.out.println("Propietario: " + propietarioCasilla[posicion]);
+						if(!propietarioCasilla[posicion].equals(jugador1)) {
+							if((!propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (!propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
+								System.out.println("El propietario solo cuenta con una de las casillas de servicios. Total a pagar: Dados * 4");
+								System.out.print("Tire los dados para ver cuanto pagará.");
+								int result = TirarDados();
+								System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 4: $" + (result*4));
+								int totalAPagar = result*4;
+								cuentaJugador1 -= totalAPagar;
+								cuentaJugador2 += totalAPagar;
+							} else if ((propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
+								System.out.println("El propietario cuenta con las dos casillas de servicios. Total a pagar: Dados * 10");
+								System.out.print("Tire los dados para ver cuanto pagará.");
+								int result = TirarDados();
+								System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 10: $" + (result*10));
+								int totalAPagar = result*10;
+								cuentaJugador1 -= totalAPagar;
+								cuentaJugador2 += totalAPagar;
 							}
 						}
-						band = false;
-					}
-				} else if (casillaComprada[posicion]) {
-					if(jugador==1) {
-						System.out.println("Propietario: " + propietarioCasilla[posicion]);
-						if((!propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (!propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
-							System.out.println("El propietario solo cuenta con una de las casillas de servicios. Total a pagar: Dados * 4");
-							System.out.print("Tire los dados para ver cuanto pagará. Presiona una tecla y enter: ");
-							int dado1 = Dado();
-							int dado2 = Dado();
-							int result = dado1+dado2;
-							System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 4: $" + (result*4));
-							int totalAPagar = result*4;
-							cuentaJugador1 -= totalAPagar;
-							cuentaJugador2 += totalAPagar;
-						} else if ((propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
-							System.out.println("El propietario cuenta con las dos casillas de servicios. Total a pagar: Dados * 10");
-							System.out.print("Tire los dados para ver cuanto pagará. Presiona una tecla y enter: ");
-							int dado1 = Dado();
-							int dado2 = Dado();
-							int result = dado1+dado2;
-							System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 10: $" + (result*10));
-							int totalAPagar = result*10;
-							cuentaJugador1 -= totalAPagar;
-							cuentaJugador2 += totalAPagar;
-						}
 					} else if(jugador==2) {
-						System.out.println("Propietario: " + propietarioCasilla[posicion]);
-						if((!propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (!propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
-							System.out.println("El propietario solo cuenta con una de las casillas de servicios. Total a pagar: Dados * 4");
-							System.out.print("Tire los dados para ver cuanto pagará. Presiona una tecla y enter: ");
-							int dado1 = Dado();
-							int dado2 = Dado();
-							int result = dado1+dado2;
-							System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 4: $" + (result*4));
-							int totalAPagar = result*4;
-							cuentaJugador2 -= totalAPagar;
-							cuentaJugador1 += totalAPagar;
-						} else if ((propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
-							System.out.println("El propietario cuenta con las dos casillas de servicios. Total a pagar: Dados * 10");
-							System.out.print("Tire los dados para ver cuanto pagará. Presiona una tecla y enter: ");
-							int dado1 = Dado();
-							int dado2 = Dado();
-							int result = dado1+dado2;
-							System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 10: $" + (result*10));
-							int totalAPagar = result*10;
-							cuentaJugador2 -= totalAPagar;
-							cuentaJugador1 += totalAPagar;
+						//System.out.println("Propietario: " + propietarioCasilla[posicion]);
+						if(!propietarioCasilla[posicion].equals(jugador2)) {
+							if((!propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (!propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
+								System.out.println("El propietario solo cuenta con una de las casillas de servicios. Total a pagar: Dados * 4");
+								System.out.print("Tire los dados para ver cuanto pagará.");
+								int result = TirarDados();
+								System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 4: $" + (result*4));
+								int totalAPagar = result*4;
+								cuentaJugador2 -= totalAPagar;
+								cuentaJugador1 += totalAPagar;
+							} else if ((propietarioCasilla[posicion].equals(propietarioCasilla[12])) || (propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
+								System.out.println("El propietario cuenta con las dos casillas de servicios. Total a pagar: Dados * 10");
+								System.out.print("Tire los dados para ver cuanto pagará.");
+								int result = TirarDados();
+								System.out.println("Ha obtenido " + result + ". Usted paga " + result + " * 10: $" + (result*10));
+								int totalAPagar = result*10;
+								cuentaJugador2 -= totalAPagar;
+								cuentaJugador1 += totalAPagar;
+							}
 						}
 					}
-				}
 			}
 		} else if (numeroCasilla[posicion] == 30) {
 			//Vayase a prisión
@@ -355,9 +322,79 @@ public class Monopoly_StarWars {
 	}
 	
 	//Compra de casilla
-	public static void ComprarCasilla(int posicion, String jugador) {
-		casillaComprada[posicion] = true;
-		propietarioCasilla[posicion] = jugador;
+	public static void ComprarCasilla(int jugador) {
+		if(jugador==1) {
+			if(!EsCasillaEspecial(posJugador1)) {
+				if(!casillaComprada[posJugador1]) {
+					System.out.println("Esta casilla no está comprada.\nPrecio de la casilla: $" + precioCasilla[posJugador1]);
+					//QUIERES COMPRAR SI O NO
+					System.out.println("¿Deseas comprar esta casilla? (Si o No)");
+					adelante = reader.next();
+					adelante = adelante.toUpperCase();
+					while(!band) {
+						if(adelante.equals("SI")) {
+							casillaComprada[posJugador1] = true;
+							propietarioCasilla[posJugador1] = jugador1;
+							cuentaJugador1 -= precioCasilla[posJugador1];
+							band = true;
+						} else if (adelante.equals("NO")) {
+							band = true;
+							break;
+						} else {
+							System.out.println("Favor de solo ingresar 'si' o 'no'");
+							adelante = reader.next();
+							adelante = adelante.toUpperCase();
+						}
+					}
+					band = false;
+				} else {
+					if((posJugador1 != 12) && (posJugador1 != 28)) {
+						System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
+						if(!propietarioCasilla[posJugador1].equals(jugador1)) {
+							System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador1] + " al jugador 2.");
+							cuentaJugador1 -= alquilerCasilla[posJugador1];
+							cuentaJugador2 += alquilerCasilla[posJugador1];
+						}
+					}
+				}
+			}
+		}else if (jugador==2) {
+			if(!EsCasillaEspecial(posJugador2)) {
+				if(!casillaComprada[posJugador2]) {
+					System.out.println("Esta casilla no está comprada.\nPrecio de la casilla: $" + precioCasilla[posJugador2]);
+					//QUIERES COMPRAR SI O NO
+					System.out.println("¿Deseas comprar esta casilla? (Si o No)");
+					adelante = reader.next();
+					adelante = adelante.toUpperCase();
+					while(!band) {
+						if(adelante.equals("SI")) {
+							casillaComprada[posJugador2] = true;
+							propietarioCasilla[posJugador2] = jugador2;
+							cuentaJugador2 -= precioCasilla[posJugador2];
+							band = true;
+						} else if (adelante.equals("NO")) {
+							band = true;
+							break;
+						} else {
+							System.out.println("Favor de solo ingresar 'si' o 'no'");
+							adelante = reader.next();
+							adelante = adelante.toUpperCase();
+						}
+					}
+					band = false;
+				} else {
+					if((posJugador2 != 12) && (posJugador2 != 28)) {	
+						//System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
+						if(!propietarioCasilla[posJugador2].equals(jugador2)) {
+							System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador2] + " al jugador 1.");
+							cuentaJugador2 -= alquilerCasilla[posJugador2];
+							cuentaJugador1 += alquilerCasilla[posJugador2];
+						}
+					}
+				}
+			}
+		}
+		
 	}
 	
 	//Chechar si pasa por GO
@@ -640,4 +677,5 @@ public class Monopoly_StarWars {
 				"                   .            -)-------+====+       .            .  \n" + 
 				"           .                               .                         ");
 	}
+	
 }
