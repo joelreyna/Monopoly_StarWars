@@ -23,6 +23,7 @@ public class Monopoly_StarWars {
 	public static void main(String[] args) {
 		
 		Inicio();
+		Inicio();
 		
 		while(juego) {
 			if(turnoPersonaje1) {
