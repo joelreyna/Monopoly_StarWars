@@ -24,6 +24,8 @@ public class Monopoly_StarWars {
 		
 		Inicio();
 		
+		//Pruebaa
+		
 		while(juego) {
 			if(turnoPersonaje1) {
 				while(nuevoTurno) {
