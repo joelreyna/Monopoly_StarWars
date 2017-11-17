@@ -4,9 +4,10 @@ public class Monopoly_StarWars {
 	static String adelante, jugador1, jugador2;
 	static Scanner reader = new Scanner(System.in);
 	static boolean band = false, turnoPersonaje1 = false, turnoPersonaje2 = false, juego = false, vuelta = false,
-			comparada = false, nuevoTurno = true, jugador1EnPrision = false, jugador2EnPrision = false, cartaSalirPrisionJ1 = false, cartaSalirPrisionJ2 = false;
+			comparada = false, nuevoTurno = true, jugador1EnPrision = false, jugador2EnPrision = false,
+			cartaSalirPrisionJ1 = false, cartaSalirPrisionJ2 = false;
 	static int numPersonaje, personajeEscogido, posJugador1 = 0, posJugador2 = 0, cuentaJugador1 = 0,
-			cuentaJugador2 = 0;
+			cuentaJugador2 = 0, turnosEnPrisionJ1 = 0, turnosEnPrisionJ2 = 0, cantEstacionesJ1 = 0, cantEstacionesJ2 = 0;
 	static String[] nombreCasilla = { "GO", "Polis Massa", "Carta del Imperio", "Mustafar", "Impuestos",
 			"Estación espacial Dibrook", "Stalgasin", "Carta de los Rebeldes", "Base eco", "Eadu",
 			"Prisión Imperial Bakura", "Iziz", "Servicio de reparación de naves espaciales", "Tipoca", "El prisma",
@@ -28,7 +29,7 @@ public class Monopoly_StarWars {
 			20, 25, 22, 22, 0, 24, 0, 26, 26, 0, 28, 25, 0, 35, 0, 50 };
 
 	public static void main(String[] args) {
-
+		Fin();
 		Inicio();
 
 		while (juego) {
@@ -40,12 +41,14 @@ public class Monopoly_StarWars {
 					System.out
 							.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador1);
 					System.out.println("Saldo actual: $" + cuentaJugador1 + " Wupiupis\n");
-					posJugador1 += AvanzarCasillas();
-					posJugador1 = ChecarSiVuelta(posJugador1);
-					if (vuelta) {
-						cuentaJugador1 += 200;
-						System.out.println("Saldo actual: $" + cuentaJugador1 + " Wupiupis");
-						vuelta = false;
+					if(!jugador1EnPrision) {
+						posJugador1 += AvanzarCasillas();
+						posJugador1 = ChecarSiVuelta(posJugador1);
+						if (vuelta) {
+							cuentaJugador1 += 200;
+							System.out.println("Saldo actual: $" + cuentaJugador1 + " Wupiupis");
+							vuelta = false;
+						}
 					}
 					InfoCasilla(posJugador1, 1);
 					ComprarCasilla(1);
@@ -58,7 +61,9 @@ public class Monopoly_StarWars {
 				// FIN de TURNO
 				turnoPersonaje1 = false;
 				turnoPersonaje2 = true;
-
+				if(!juego) {
+					break;
+				}
 			} else if (turnoPersonaje2) {
 				ASCIICambioDeTurno();
 				while (nuevoTurno) {
@@ -67,12 +72,14 @@ public class Monopoly_StarWars {
 					System.out
 							.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador2);
 					System.out.println("Saldo actual: $" + cuentaJugador2 + " Wupiupis");
-					posJugador2 += AvanzarCasillas();
-					posJugador2 = ChecarSiVuelta(posJugador2);
-					if (vuelta) {
-						cuentaJugador2 += 200;
-						System.out.println("Saldo actual: $" + cuentaJugador2 + " Wupiupis\n");
-						vuelta = false;
+					if(!jugador2EnPrision) {
+						posJugador2 += AvanzarCasillas();
+						posJugador2 = ChecarSiVuelta(posJugador2);
+						if (vuelta) {
+							cuentaJugador2 += 200;
+							System.out.println("Saldo actual: $" + cuentaJugador2 + " Wupiupis\n");
+							vuelta = false;
+						}
 					}
 					InfoCasilla(posJugador2, 2);
 					ComprarCasilla(2);
@@ -86,7 +93,9 @@ public class Monopoly_StarWars {
 				// FIN de TURNO
 				turnoPersonaje1 = true;
 				turnoPersonaje2 = false;
-
+				if(!juego) {
+					break;
+				}
 			}
 		}
 
@@ -96,6 +105,26 @@ public class Monopoly_StarWars {
 	 * Funciones
 	 */
 
+	//Estaciones espaciales en posesión
+	public static int CantidadEstaciones(int jugador) {
+		if(jugador==1) {
+			for(int i=5;i<=35;i+=5) {
+				if(propietarioCasilla[i].equals(jugador1)) {
+					cantEstacionesJ1++;
+				}
+			}
+			return cantEstacionesJ1;
+		} else if (jugador == 2) {
+			for(int i=5;i<=35;i+=5) {
+				if(propietarioCasilla[i].equals(jugador2)) {
+					cantEstacionesJ2++;
+				}
+			}
+			return cantEstacionesJ2;
+		}
+		return 0;
+	}
+	
 	// Menu por turno
 	public static void Menu(int jugador) {
 		int numeroDePropiedades = 1;
@@ -103,7 +132,7 @@ public class Monopoly_StarWars {
 		/*
 		 * GOD MODE
 		 */
-		System.out.println("4. GOD MODE");
+		//System.out.println("4. GOD MODE");
 		if (jugador == 1) {
 			System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Terminar turno");
 			try {
@@ -127,12 +156,13 @@ public class Monopoly_StarWars {
 				/*
 				 * GOD MODE
 				 */
-				case 4:
+				/*case 4:
 					System.out.print("A que casilla quiere ir: ");
 					opcion = reader.nextInt();
 					posJugador1 = opcion;
 					InfoCasilla(posJugador1, 1);
 					ComprarCasilla(1);
+				 */
 				}
 
 			} catch (Exception e) {
@@ -162,12 +192,13 @@ public class Monopoly_StarWars {
 				/*
 				 * GOD MODE
 				 */
-				case 4:
+				/*case 4:
 					System.out.print("A que casilla quiere ir: ");
 					opcion = reader.nextInt();
 					posJugador2 = opcion;
 					InfoCasilla(posJugador2, 2);
 					ComprarCasilla(2);
+				 */
 				}
 
 			} catch (Exception e) {
@@ -265,16 +296,19 @@ public class Monopoly_StarWars {
 			// Prision
 			if (jugador == 1) {
 				if (jugador1EnPrision) {
+					turnosEnPrisionJ1++;
 					System.out.println("Está encerrado en prisión");
-					if(cartaSalirPrisionJ1) {
+					System.out.println("LLeva " + turnosEnPrisionJ1 + " turno/s en prisión.");
+					if (cartaSalirPrisionJ1) {
 						System.out.println("¿Utilizar carta para salir de prisión gratis?");
-						while(!band) {
+						while (!band) {
 							adelante = reader.next();
 							adelante = adelante.toUpperCase();
-							if(adelante.equals("SI")) {
+							if (adelante.equals("SI")) {
 								cartaSalirPrisionJ1 = false;
 								jugador1EnPrision = false;
-								
+								turnosEnPrisionJ1 = 0;
+								System.out.println("Podrá salir al siguiente turno");
 								band = true;
 							} else if (adelante.equals("NO")) {
 								band = true;
@@ -284,13 +318,122 @@ public class Monopoly_StarWars {
 						}
 						band = false;
 					}
-					System.out.println("");
+					if (jugador1EnPrision) {
+						System.out.print(
+								"Tira los dados para ver si sacas dobles. Presiona una tecla y enter para continuar: ");
+						adelante = reader.next();
+						int dado1 = Dado();
+						int dado2 = Dado();
+						int result = dado1 + dado2;
+						System.out.println("Dado 1: " + dado1 + "\nDado 2: " + dado2);
+						if (dado1 == dado2) {
+							System.out.println("¡Ha obtenido dobles!");
+							jugador1EnPrision = false;
+							turnosEnPrisionJ1 = 0;
+							posJugador1 += result;
+							InfoCasilla(posJugador1, jugador);
+						}
+					}
+					if (jugador1EnPrision) {
+						System.out.println("¿Desea pagar una multa de $50 para salir?");
+						while (!band) {
+							adelante = reader.next();
+							adelante = adelante.toUpperCase();
+							if (adelante.equals("SI")) {
+								cuentaJugador1 -= 50;
+								jugador1EnPrision = false;
+								System.out.println("Podrá salir al siguiente turno");
+								turnosEnPrisionJ1 = 0;
+								band = true;
+							} else if (adelante.equals("NO")) {
+								band = true;
+							} else {
+								System.out.println("Ingrese solamente 'si' o 'no'");
+							}
+						}
+						band = false;
+					}
+					if (jugador1EnPrision) {
+						if (turnosEnPrisionJ1 >= 3) {
+							turnosEnPrisionJ1 = 0;
+							System.out.println(
+									"Ya ha estado 3 turnos en prisión, tiene que pagar $50, y sale el proximo turno");
+							cuentaJugador1 -= 50;
+							System.out.println("Saldo jugador 1: $" + cuentaJugador1);
+							jugador1EnPrision = false;
+						}
+					}
 				} else {
 					System.out.println("Está aqui de visita.");
 				}
 			} else if (jugador == 2) {
+
 				if (jugador2EnPrision) {
-					// TODO si, en prision
+					turnosEnPrisionJ2++;
+					System.out.println("Está encerrado en prisión");
+					System.out.println("LLeva " + turnosEnPrisionJ2 + " turno/s en prisión.");
+					if (cartaSalirPrisionJ2) {
+						System.out.println("¿Utilizar carta para salir de prisión gratis?");
+						while (!band) {
+							adelante = reader.next();
+							adelante = adelante.toUpperCase();
+							if (adelante.equals("SI")) {
+								cartaSalirPrisionJ2 = false;
+								jugador2EnPrision = false;
+								turnosEnPrisionJ2 = 0;
+								band = true;
+							} else if (adelante.equals("NO")) {
+								band = true;
+							} else {
+								System.out.println("Ingrese solamente 'si' o 'no'");
+							}
+						}
+						band = false;
+					}
+					if (jugador2EnPrision) {
+						System.out.print(
+								"Tira los dados para ver si sacas dobles. Presiona una tecla y enter para continuar: ");
+						adelante = reader.next();
+						int dado1 = Dado();
+						int dado2 = Dado();
+						int result = dado1 + dado2;
+						System.out.println("Dado 1: " + dado1 + "\nDado 2: " + dado2);
+						if (dado1 == dado2) {
+							System.out.println("¡Ha obtenido dobles!");
+							jugador2EnPrision = false;
+							turnosEnPrisionJ2 = 0;
+							posJugador2 += result;
+							InfoCasilla(posJugador2, jugador);
+						}
+					}
+					if (jugador2EnPrision) {
+						System.out.println("¿Desea pagar una multa de $50 para salir?");
+						while (!band) {
+							adelante = reader.next();
+							adelante = adelante.toUpperCase();
+							if (adelante.equals("SI")) {
+								cuentaJugador2 -= 50;
+								jugador2EnPrision = false;
+								turnosEnPrisionJ2 = 0;
+								System.out.println("Podrá salir al siguiente turno");
+								band = true;
+							} else if (adelante.equals("NO")) {
+								band = true;
+							} else {
+								System.out.println("Ingrese solamente 'si' o 'no'");
+							}
+						}
+						band = false;
+					}
+					if (jugador2EnPrision) {
+						if (turnosEnPrisionJ2 >= 3) {
+							System.out.println("Ya ha estado 3 turnos en prisión, tiene que pagar $50, y sale el proximo turno");
+							cuentaJugador2 -= 50;
+							System.out.println("Saldo jugador 2: $" + cuentaJugador2);
+							jugador2EnPrision = false;
+							turnosEnPrisionJ2 = 0;
+						}
+					}
 				} else {
 					System.out.println("Está aqui de visita");
 				}
@@ -299,13 +442,12 @@ public class Monopoly_StarWars {
 			// Servicios
 			if (!casillaComprada[posicion]) {
 				if (jugador == 1) {
-					ComprarCasilla(1);
+					//ComprarCasilla(1);
 				} else if (jugador == 2) {
-					ComprarCasilla(2);
+					//ComprarCasilla(2);
 				}
 			} else if (casillaComprada[posicion]) {
 				if (jugador == 1) {
-					// System.out.println("Propietario: " + propietarioCasilla[posicion]);
 					if (!propietarioCasilla[posicion].equals(jugador1)) {
 						if ((!propietarioCasilla[posicion].equals(propietarioCasilla[12]))
 								|| (!propietarioCasilla[posicion].equals(propietarioCasilla[28]))) {
@@ -413,7 +555,16 @@ public class Monopoly_StarWars {
 					}
 					band = false;
 				} else {
-					if ((posJugador1 != 12) && (posJugador1 != 28)) {
+					if ((posJugador1 == 5) || (posJugador1 == 15) || (posJugador1 == 25) || (posJugador1 ==35)) {
+						System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
+						if (!propietarioCasilla[posJugador1].equals(jugador1)) {
+							System.out.println("El propietario cuenta con " + CantidadEstaciones(2) + " estaciones. (Pagar $50 por estacion)");
+							System.out.println("Se ha pagado $ " + (25 * CantidadEstaciones(2)) + " al jugador 2.");
+							cuentaJugador1 -= 25 * CantidadEstaciones(2);
+							cuentaJugador2 += 25 * CantidadEstaciones(2);
+						}
+					}
+					if ((posJugador1 != 12) && (posJugador1 != 28) && !((posJugador1 == 5) || (posJugador1 == 15) || (posJugador1 == 25) || (posJugador1 ==35))) {
 						System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
 						if (!propietarioCasilla[posJugador1].equals(jugador1)) {
 							System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador1] + " al jugador 2.");
@@ -449,7 +600,16 @@ public class Monopoly_StarWars {
 					}
 					band = false;
 				} else {
-					if ((posJugador2 != 12) && (posJugador2 != 28)) {
+					if ((posJugador2 == 5) || (posJugador2 == 15) || (posJugador2 == 25) || (posJugador2 ==35)) {
+						System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
+						if (!propietarioCasilla[posJugador2].equals(jugador2)) {
+							System.out.println("El propietario cuenta con " + CantidadEstaciones(1) + " estaciones. (Pagar $50 por estacion)");
+							System.out.println("Se ha pagado $ " + (25 * CantidadEstaciones(1)) + " al jugador 1.");
+							cuentaJugador2 -= 25 * CantidadEstaciones(1);
+							cuentaJugador1 += 25 * CantidadEstaciones(1);
+						}
+					}
+					if ((posJugador2 != 12) && (posJugador2 != 28) && !((posJugador2 == 5) || (posJugador2 == 15) || (posJugador2 == 25) || (posJugador2 ==35))) {
 						// System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
 						if (!propietarioCasilla[posJugador2].equals(jugador2)) {
 							System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador2] + " al jugador 1.");
@@ -508,8 +668,8 @@ public class Monopoly_StarWars {
 				break;
 			case 7:
 				System.out.println(
-						"¡Hay que reparar nuestras ciudades destruidas! Pague $40 por cada casa y $115 por cada hotel");
-				// TODO Casas y Hoteles
+						"¡Hay que reparar nuestras ciudades destruidas! Pague $100 para las reparaciones");
+				cuentaJugador1 -= 100;
 				break;
 			case 8:
 				System.out.println(
@@ -536,7 +696,8 @@ public class Monopoly_StarWars {
 				break;
 			case 13:
 				System.out.println("¡Ha sido capturado! Váyase directamente a prisión sin pasar por GO ni cobrar $200");
-				// TODO Sistema de prision
+				jugador1EnPrision = true;
+				posJugador1 = 10;
 				break;
 			case 14:
 				System.out.println("¡La Gran Apertura de la cantina de Mos Eisley! Recibe $25");
@@ -544,11 +705,78 @@ public class Monopoly_StarWars {
 				break;
 			case 15:
 				System.out.println("¡Salga de la prisión gratis! Puede guardar esta tarjeta");
-				// TODO Sistema de prisión
+				cartaSalirPrisionJ1 = true;
 				break;
 			}
 		} else if (jugador == 2) {
-			// TODO Acabar el jugador 1
+			switch (numCarta) {
+			case 1:
+				System.out.println("Usted hereda $100 de un pariente lejos de esta galaxia");
+				cuentaJugador2 += 100;
+				break;
+			case 2:
+				System.out.println("Usted ha ganado $10 en un concurso de tiro");
+				cuentaJugador2 += 10;
+				break;
+			case 3:
+				System.out.println("El Banco Estelar le pagará $45 debido a una deuda pendiente");
+				cuentaJugador2 += 45;
+				break;
+			case 4:
+				System.out.println("Se ha herido en una batalla, pague al banco estelar $50 para el médico");
+				cuentaJugador2 -= 50;
+				break;
+			case 5:
+				System.out.println("Le ha ganado una apuesta al otro jugador, cóbrele $50");
+				cuentaJugador2 += 50;
+				cuentaJugador1 -= 50;
+				break;
+			case 6:
+				System.out.println("Se le reembolsaran $20 debido a sus contribuciones para salvar a la galaxia");
+				cuentaJugador2 += 20;
+				break;
+			case 7:
+				System.out.println(
+						"¡Hay que reparar nuestras ciudades destruidas! Pague $100 para las reparaciones");
+				cuentaJugador2 -= 100;
+				break;
+			case 8:
+				System.out.println(
+						"Se ha cumplido el plazo de sus ahorros para la compra de un nuevo sable de luz, cobre $100");
+				cuentaJugador2 += 100;
+				break;
+			case 9:
+				System.out.println("El Banco Intergaláctico le paga $100 por devolución de impuestos imperiales");
+				cuentaJugador2 += 100;
+				break;
+			case 10:
+				System.out.println("Pague $100 por impuestos espaciales");
+				cuentaJugador2 += 100;
+				break;
+			case 11:
+				System.out.println("Viaje a través del hiperespacio a GO, cobre $200");
+				posJugador2 = 0;
+				System.out.println("Pasa por GO, recibe $200 Wupiupis");
+				cuentaJugador2 += 200;
+				break;
+			case 12:
+				System.out.println("Tiene que renovar su licencia intergaláctica, pague $150");
+				cuentaJugador2 -= 150;
+				break;
+			case 13:
+				System.out.println("¡Ha sido capturado! Váyase directamente a prisión sin pasar por GO ni cobrar $200");
+				jugador2EnPrision = true;
+				posJugador2 = 10;
+				break;
+			case 14:
+				System.out.println("¡La Gran Apertura de la cantina de Mos Eisley! Recibe $25");
+				cuentaJugador2 += 25;
+				break;
+			case 15:
+				System.out.println("¡Salga de la prisión gratis! Puede guardar esta tarjeta");
+				cartaSalirPrisionJ2 = true;
+				break;
+			}
 		}
 	}
 
@@ -562,13 +790,35 @@ public class Monopoly_StarWars {
 			switch (numCarta) {
 			case 1:
 				System.out.println(
-						"Avance hasta estacion espacial mas cercana y pague al dueño el doble del alquiler (Si es que tiene)");
-				// TODO Checar estacion mas cercana, avanzar hasta ella y pagar el doble
+						"Avance hasta la siguiente estacion espacial y pague al dueño el alquiler correspondiente");
+				if(posJugador1==7) {
+					posJugador1=15;
+					InfoCasilla(posJugador1, 1);
+				} else if (posJugador1==22) {
+					posJugador1=25;
+					InfoCasilla(posJugador1, 1);
+				} else if (posJugador1==36) {
+					posJugador1=5;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador1 += 200;
+					InfoCasilla(posJugador1, 1);
+				}
 				break;
 			case 2:
 				System.out.println(
-						"Avance hasta estacion espacial mas cercana y pague al dueño el doble del alquiler (Si es que tiene)");
-				// TODO Checar estacion mas cercana, avanzar hasta ella y pagar el doble
+						"Avance hasta la siguiente estacion espacial y pague al dueño el alquiler correspondiente");
+				if(posJugador1==7) {
+					posJugador1=15;
+					InfoCasilla(posJugador1, 1);
+				} else if (posJugador1==22) {
+					posJugador1=25;
+					InfoCasilla(posJugador1, 1);
+				} else if (posJugador1==36) {
+					posJugador1=5;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador1 += 200;
+					InfoCasilla(posJugador1, 1);
+				}
 				break;
 			case 3:
 				System.out.println("¡Atrás!, retroceda 3 casillas");
@@ -577,16 +827,22 @@ public class Monopoly_StarWars {
 				break;
 			case 4:
 				System.out.println(
-						"Muévase a la casilla de Servicios mas cercana. Si tiene propietario, lance los dados y pague al propietario diez veces la suma lanzada");
-				// TODO Sistema de servicios
+						"Muévase a la siguiente casilla de Servicios. Si tiene propietario, pague al propietario lo que corresponda");
+				if((posJugador1>28)||(posJugador1<12)) {
+					posJugador1 = 12;
+					InfoCasilla(posJugador1, 1);
+				} else {
+					posJugador1 = 28;
+					InfoCasilla(posJugador1, 1);
+				}
 				break;
 			case 5:
 				System.out.println(
-						"Surge una rebelión en todos los planetas, page $25 por cada casa y $100 por cada hotel para evitar ser saqueado");
-				// TODO sistema de casas
+						"Surge una rebelión en todos los planetas, page $200 para evitar ser saqueado");
+				cuentaJugador1 -= 200;
 				break;
 			case 6:
-				System.out.println("Se vence el plazo de su caja de ahorros integaláctica, cobre al bacno $150");
+				System.out.println("Se vence el plazo de su caja de ahorros integaláctica, cobre al banco $150");
 				cuentaJugador1 += 150;
 				break;
 			case 7:
@@ -596,7 +852,9 @@ public class Monopoly_StarWars {
 				break;
 			case 8:
 				System.out.println("Viaje a través del Hiperespacio hasta GO, cobrese $200");
-				// TODO Ir a GO
+				posJugador1 = 0;
+				System.out.println("Pasa por GO, recibe $200 Wupiupis");
+				cuentaJugador1 += 200;
 				break;
 			case 9:
 				System.out.println("Pague un impuesto de $15 por tener droids ilegales");
@@ -604,22 +862,47 @@ public class Monopoly_StarWars {
 				break;
 			case 10:
 				System.out.println("Tomese un paseo por la estación espacial Dibrook, si pasa por GO cobre $200");
-				// TODO Ir a pos 5, checar si pasa por GO
+				if(posJugador1 > 5) {
+					posJugador1 = 5;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador1 += 200;
+					InfoCasilla(posJugador1, 1);
+				} else {
+					posJugador1 = 5;
+					InfoCasilla(posJugador1, 1);
+				}
 				break;
 			case 11:
 				System.out.println(
 						"Váyase directamente a la prisión Bakura por pelearse con un Stormtrooper, sin pasar por GO ni y cobrar los $200");
-				// TODO Ir a prision
+				jugador1EnPrision = true;
+				posJugador1 = 10;
 				break;
 			case 12:
 				System.out.println(
 						"Ha ganado unas vacaciones de lujo en Iziz, adelántase hacia la casilla, si pasa sobre GO, cóbrense $200");
-				// TODO Ir a pos 12, checar si pasa por GO
+				if(posJugador1 > 12) {
+					posJugador1 = 12;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador1 += 200;
+					InfoCasilla(posJugador1, 1);
+				} else {
+					posJugador1 = 12;
+					InfoCasilla(posJugador1, 1);
+				}
 				break;
 			case 13:
 				System.out.println(
 						"Ha sido obligado a huir tu ciudad, avánzase hasta el Palacio de Jabba, si pasa sobre GO, cóbrense $200");
-				// TODO Ir a pos 25, checar si pasa por GO
+				if(posJugador1 > 25) {
+					posJugador1 = 25;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador1 += 200;
+					InfoCasilla(posJugador1, 1);
+				} else {
+					posJugador1 = 25;
+					InfoCasilla(posJugador1, 1);
+				}
 				break;
 			case 14:
 				System.out.println("Ha sido elegido como Senador de Naboo, pague $50 al otro jugador");
@@ -629,22 +912,137 @@ public class Monopoly_StarWars {
 			case 15:
 				System.out.println(
 						"PUEDES SALIR DE LA CÁRCEL con ayuda de los rebeldes, guardarse esta tarjeta hasta que se necesite");
-				// TODO Prision, salir gratis
+				cartaSalirPrisionJ1 = true;
 				break;
 			}
-		}
-	}
-
-	public static void ChecarSiEnBancarrota(int jugador) {
-		if (jugador == 1) {
-			if (cuentaJugador1 < 0) {
-				System.out.println("El jugador 1 ha quedado en bancarrota.\nGANA " + jugador2 + " (JUGADOR 2)");
-				juego = false;
-			}
 		} else if (jugador == 2) {
-			if (cuentaJugador2 < 0) {
-				System.out.println("El jugador 2 ha quedado en bancarrota.\nGANA " + jugador2 + " (JUGADOR 2)");
-				juego = false;
+			switch (numCarta) {
+			case 1:
+				System.out.println(
+						"Avance hasta la siguiente estacion espacial y pague al dueño el alquiler correspondiente");
+				if(posJugador2==7) {
+					posJugador2=15;
+					InfoCasilla(posJugador2, 1);
+				} else if (posJugador2==22) {
+					posJugador2=25;
+					InfoCasilla(posJugador2, 2);
+				} else if (posJugador2==36) {
+					posJugador2=5;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador2 += 200;
+					InfoCasilla(posJugador2, 2);
+				}
+				break;
+			case 2:
+				System.out.println(
+						"Avance hasta la siguiente estacion espacial y pague al dueño el alquiler correspondiente");
+				if(posJugador2==7) {
+					posJugador2=15;
+					InfoCasilla(posJugador2, 1);
+				} else if (posJugador2==22) {
+					posJugador2=25;
+					InfoCasilla(posJugador2, 2);
+				} else if (posJugador2==36) {
+					posJugador2=5;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador2 += 200;
+					InfoCasilla(posJugador2, 2);
+				}
+				break;
+			case 3:
+				System.out.println("¡Atrás!, retroceda 3 casillas");
+				posJugador2 = posJugador2 - 3;
+				InfoCasilla(posJugador2, 2);
+				break;
+			case 4:
+				System.out.println(
+						"Muévase a la siguiente casilla de Servicios. Si tiene propietario, pague al propietario lo que corresponda");
+				if((posJugador2>28)||(posJugador2<12)) {
+					posJugador2 = 12;
+					InfoCasilla(posJugador2, 2);
+				} else {
+					posJugador2 = 28;
+					InfoCasilla(posJugador2, 2);
+				}
+				break;
+			case 5:
+				System.out.println(
+						"Surge una rebelión en todos los planetas, page $200 para evitar ser saqueado");
+				cuentaJugador2 -= 200;
+				break;
+			case 6:
+				System.out.println("Se vence el plazo de su caja de ahorros integaláctica, cobre al banco $150");
+				cuentaJugador2 += 150;
+				break;
+			case 7:
+				System.out.println("Ha sido capturado por el Imperio, avance hasta la Estrella de la Muerte");
+				posJugador2 = 39;
+				InfoCasilla(posJugador2, 2);
+				break;
+			case 8:
+				System.out.println("Viaje a través del Hiperespacio hasta GO, cobrese $200");
+				posJugador2 = 0;
+				System.out.println("Pasa por GO, recibe $200 Wupiupis");
+				cuentaJugador2 += 200;
+				break;
+			case 9:
+				System.out.println("Pague un impuesto de $15 por tener droids ilegales");
+				cuentaJugador2 -= 15;
+				break;
+			case 10:
+				System.out.println("Tomese un paseo por la estación espacial Dibrook, si pasa por GO cobre $200");
+				if(posJugador2 > 5) {
+					posJugador2 = 5;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador2 += 200;
+					InfoCasilla(posJugador2, 2);
+				} else {
+					posJugador2 = 5;
+					InfoCasilla(posJugador2, 2);
+				}
+				break;
+			case 11:
+				System.out.println(
+						"Váyase directamente a la prisión Bakura por pelearse con un Stormtrooper, sin pasar por GO ni y cobrar los $200");
+				jugador2EnPrision = true;
+				posJugador2 = 10;
+				break;
+			case 12:
+				System.out.println(
+						"Ha ganado unas vacaciones de lujo en Iziz, adelántase hacia la casilla, si pasa sobre GO, cóbrense $200");
+				if(posJugador2 > 12) {
+					posJugador2 = 12;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador2 += 200;
+					InfoCasilla(posJugador2, 2);
+				} else {
+					posJugador2 = 12;
+					InfoCasilla(posJugador2, 2);
+				}
+				break;
+			case 13:
+				System.out.println(
+						"Ha sido obligado a huir tu ciudad, avánzase hasta el Palacio de Jabba, si pasa sobre GO, cóbrense $200");
+				if(posJugador2 > 25) {
+					posJugador2 = 25;
+					System.out.println("Pasa por GO, recibe $200 Wupiupis");
+					cuentaJugador2 += 200;
+					InfoCasilla(posJugador2, 1);
+				} else {
+					posJugador2 = 25;
+					InfoCasilla(posJugador2, 1);
+				}
+				break;
+			case 14:
+				System.out.println("Ha sido elegido como Senador de Naboo, pague $50 al otro jugador");
+				cuentaJugador2 -= 50;
+				cuentaJugador1 += 50;
+				break;
+			case 15:
+				System.out.println(
+						"PUEDES SALIR DE LA CÁRCEL con ayuda de los rebeldes, guardarse esta tarjeta hasta que se necesite");
+				cartaSalirPrisionJ2 = true;
+				break;
 			}
 		}
 	}
@@ -657,7 +1055,7 @@ public class Monopoly_StarWars {
 		// Bienvenida
 		ImprimirLogo();
 		System.out.println(
-				"\t\t    Bienvenidos a Monopoly Star Wars!\nLas reglas son las mismas que en el monopoly tradicional,\nel primero que quede en bancarrota pierde.");
+				"\t\t    Bienvenidos a Monopoly Star Wars!\nLas reglas son sencillas, juega estrategicamente para ganar la mayor cantidad de dinero,\nel primero que quede en bancarrota pierde.");
 		System.out.print("\nPresione una tecla y enter para continuar.");
 		adelante = reader.next();
 
@@ -755,6 +1153,22 @@ public class Monopoly_StarWars {
 		band = false;
 		juego = true;
 	}
+	
+	public static void ChecarSiEnBancarrota(int jugador) {
+		if (jugador == 1) {
+			if (cuentaJugador1 < 0) {
+				Fin();
+				System.out.println("El jugador 1 ha quedado en bancarrota.\nGANA " + jugador2 + " (JUGADOR 2)");
+				juego = false;
+			}
+		} else if (jugador == 2) {
+			if (cuentaJugador2 < 0) {
+				Fin();
+				System.out.println("El jugador 2 ha quedado en bancarrota.\nGANA " + jugador2 + " (JUGADOR 2)");
+				juego = false;
+			}
+		}
+	}
 
 	public static void ImprimirLogo() {
 		System.out.println("                  ________________.  ___     .______  \n"
@@ -784,5 +1198,17 @@ public class Monopoly_StarWars {
 				+ "                   .            -)-------+====+       .            .  \n"
 				+ "           .                               .                         ");
 	}
-
+	
+	public static void Fin() {
+		System.out.println("                                                       _._        *\r\n" + 
+				"                                       _______..........-`-'-..__  /\r\n" + 
+				"                                 ...###/   \\        \\         ____\\/\r\n" + 
+				"                           ...########/     \\  ___...\\--     / _   \\\r\n" + 
+				"                 __..---#############/_..---'''     ========/ //  __\\___\r\n" + 
+				"         __..--''  /     /  / --..__  ```-------________________//      =\r\n" + 
+				"   __--''       /      /   /________=        \\                 //_______=\r\n" + 
+				"  `-.._____  /       /    /             ___   \\               ______/__\r\n" + 
+				"           `````-----------------------////----\\----------'''' ______//  LS\r\n" + 
+				"                                               /_____.....-----");
+	}
 }
