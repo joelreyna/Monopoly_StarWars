@@ -27,9 +27,15 @@ public class Monopoly_StarWars {
 			"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", };
 	static int[] alquilerCasilla = { 0, 2, 0, 4, 0, 25, 6, 0, 6, 8, 0, 10, 0, 10, 12, 25, 14, 0, 14, 16, 0, 18, 0, 18,
 			20, 25, 22, 22, 0, 24, 0, 26, 26, 0, 28, 25, 0, 35, 0, 50 };
+	static int[] precioDeCasa = {0,50,0,50,0,0,50,0,50,50,0,100,0,100,100,0,100,0,100,100,0,150,0,150,150,0,150,150,0,150,0,200,200,0,200,0,0,200,0,200};
+	static int[] numDeCasasEnCasilla = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static int[] alquilerCasillaCon1Casa = {0,10,0,20,0,0,30,0,30,40,0,50,0,50,60,0,70,0,70,80,0,90,0,90,100,0,110,110,0,120,0,130,130,0,150,0,0,175,0,200};
+	static int[] alquilerCasillaCon2Casa = {0,30,0,60,0,0,90,0,90,100,0,150,0,150,180,0,200,0,200,220,0,250,0,250,300,0,330,330,0,360,0,390,390,0,450,0,0,500,0,600};
+	static int[] alquilerCasillaCon3Casa = {0,10,0,20,0,0,30,0,30,40,0,50,0,50,60,0,70,0,70,80,0,90,0,90,100,0,110,110,0,120,0,130,130,0,150,0,0,1750,0,200};
+	static int[] alquilerCasillaCon4Casa = {0,10,0,20,0,0,30,0,30,40,0,50,0,50,60,0,70,0,70,80,0,90,0,90,100,0,110,110,0,120,0,130,130,0,150,0,0,1750,0,200};
 
 	public static void main(String[] args) {
-		Fin();
+		
 		Inicio();
 
 		while (juego) {
@@ -127,30 +133,69 @@ public class Monopoly_StarWars {
 	
 	// Menu por turno
 	public static void Menu(int jugador) {
-		int numeroDePropiedades = 1;
+		int numeroDePropiedadJugador = 1;
 		System.out.println("\n¿Qué desea hacer?");
 		/*
 		 * GOD MODE
 		 */
 		//System.out.println("4. GOD MODE");
 		if (jugador == 1) {
-			System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Terminar turno");
+			System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Comprar casas\n4. Terminar turno");
 			try {
 				int opcion = reader.nextInt();
 				switch (opcion) {
 				case 1:
 					for (int i = 0; i < propietarioCasilla.length; i++) {
 						if (propietarioCasilla[i].equals(jugador1)) {
-							System.out.println(numeroDePropiedades + ". " + nombreCasilla[i] + ". Numero de casilla: "
+							System.out.println(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
 									+ numeroCasilla[i]);
-							numeroDePropiedades++;
+							numeroDePropiedadJugador++;
 						}
 					}
 					break;
 				case 2:
 					System.out.println("Tu saldo es: $" + cuentaJugador1);
 					break;
-				case 3:
+				case 3: 
+					for (int i = 0; i < propietarioCasilla.length; i++) {
+						if (propietarioCasilla[i].equals(jugador1)) {
+							if(!((numeroCasilla[i]==5)||(numeroCasilla[i]==15)||(numeroCasilla[i]==25)||(numeroCasilla[i]==35)||(numeroCasilla[i]==12)||(numeroCasilla[i]==28))) {
+								System.out.println(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
+										+ numeroCasilla[i]);
+								numeroDePropiedadJugador++;
+							}
+						}
+					}
+					while (!band) {
+						System.out.println("¿En que casilla quieres comprar una casa? (Ingresa numero de casilla)");
+						try {
+							int casilla = reader.nextInt();
+							if (propietarioCasilla[casilla].equals(jugador1)) {
+								System.out.println("Una casa en esta casilla cuesta $" + precioDeCasa[casilla]);
+								System.out.println("¿Desea comprarla? Ingrese 'si' o 'no'");
+								adelante = reader.next();
+								adelante = adelante.toUpperCase();
+								if(adelante.equals("SI")) {
+									numDeCasasEnCasilla[casilla]++;
+									cuentaJugador1 -= precioDeCasa[casilla];
+								} 
+							} else {
+								System.out.println("Usted no posee esa casilla");
+							}
+						} catch (Exception e) {
+							System.out.print("Favor de solo ingresar un numero");
+							reader.nextInt();
+						}
+						System.out.println("Salir de 'Comprar casas', 'si' o 'no'");
+						adelante = reader.next();
+						adelante = adelante.toUpperCase();
+						if(adelante.equals("SI")) {
+							band = true;
+						} 
+					}
+					band = false;
+					break;
+				case 4:
 					band = true;
 					break;
 				/*
@@ -166,20 +211,20 @@ public class Monopoly_StarWars {
 				}
 
 			} catch (Exception e) {
-				System.out.println("Favor de solo ingresar un numero del 1-3");
+				System.out.println("Favor de solo ingresar un numero del 1-4");
 				reader.next();
 			}
 		} else if (jugador == 2) {
-			System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Terminar turno");
+			System.out.println("1. Ver propiedades\n2. Checar saldo\n3. Comprar casas\n4. Terminar turno");
 			try {
 				int opcion = reader.nextInt();
 				switch (opcion) {
 				case 1:
 					for (int i = 0; i < propietarioCasilla.length; i++) {
 						if (propietarioCasilla[i].equals(jugador2)) {
-							System.out.println(numeroDePropiedades + ". " + nombreCasilla[i] + ". Numero de casilla: "
+							System.out.println(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
 									+ numeroCasilla[i]);
-							numeroDePropiedades++;
+							numeroDePropiedadJugador++;
 						}
 					}
 					break;
@@ -187,6 +232,45 @@ public class Monopoly_StarWars {
 					System.out.println("Tu saldo es: $" + cuentaJugador2);
 					break;
 				case 3:
+					for (int i = 0; i < propietarioCasilla.length; i++) {
+						if (propietarioCasilla[i].equals(jugador2)) {
+							if(!((numeroCasilla[i]==5)||(numeroCasilla[i]==15)||(numeroCasilla[i]==25)||(numeroCasilla[i]==35)||(numeroCasilla[i]==12)||(numeroCasilla[i]==28))) {
+								System.out.println(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
+										+ numeroCasilla[i]);
+								numeroDePropiedadJugador++;
+							}
+						}
+					}
+					while (!band) {
+						System.out.println("¿En que casilla quieres comprar una casa? (Ingresa numero de casilla)");
+						try {
+							int casilla = reader.nextInt();
+							if (propietarioCasilla[casilla].equals(jugador2)) {
+								System.out.println("Una casa en esta casilla cuesta $" + precioDeCasa[casilla]);
+								System.out.println("¿Desea comprarla? Ingrese 'si' o 'no'");
+								adelante = reader.next();
+								adelante = adelante.toUpperCase();
+								if(adelante.equals("SI")) {
+									numDeCasasEnCasilla[casilla]++;
+									cuentaJugador2 -= precioDeCasa[casilla];
+								} 
+							} else {
+								System.out.println("Usted no posee esa casilla");
+							}
+						} catch (Exception e) {
+							System.out.print("Favor de solo ingresar un numero");
+							reader.nextInt();
+						}
+						System.out.println("Salir de 'Comprar casas', 'si' o 'no'");
+						adelante = reader.next();
+						adelante = adelante.toUpperCase();
+						if(adelante.equals("SI")) {
+							band = true;
+						} 
+					}
+					band = false;
+					break;
+				case 4:
 					band = true;
 					break;
 				/*
@@ -202,7 +286,7 @@ public class Monopoly_StarWars {
 				}
 
 			} catch (Exception e) {
-				System.out.println("Favor de solo ingresar un numero del 1-3");
+				System.out.println("Favor de solo ingresar un numero del 1-4");
 				reader.next();
 			}
 		}
@@ -881,26 +965,26 @@ public class Monopoly_StarWars {
 			case 12:
 				System.out.println(
 						"Ha ganado unas vacaciones de lujo en Iziz, adelántase hacia la casilla, si pasa sobre GO, cóbrense $200");
-				if(posJugador1 > 12) {
-					posJugador1 = 12;
+				if(posJugador1 > 11) {
+					posJugador1 = 11;
 					System.out.println("Pasa por GO, recibe $200 Wupiupis");
 					cuentaJugador1 += 200;
 					InfoCasilla(posJugador1, 1);
 				} else {
-					posJugador1 = 12;
+					posJugador1 = 11;
 					InfoCasilla(posJugador1, 1);
 				}
 				break;
 			case 13:
 				System.out.println(
 						"Ha sido obligado a huir tu ciudad, avánzase hasta el Palacio de Jabba, si pasa sobre GO, cóbrense $200");
-				if(posJugador1 > 25) {
-					posJugador1 = 25;
+				if(posJugador1 > 24) {
+					posJugador1 = 24;
 					System.out.println("Pasa por GO, recibe $200 Wupiupis");
 					cuentaJugador1 += 200;
 					InfoCasilla(posJugador1, 1);
 				} else {
-					posJugador1 = 25;
+					posJugador1 = 24;
 					InfoCasilla(posJugador1, 1);
 				}
 				break;
@@ -1010,26 +1094,26 @@ public class Monopoly_StarWars {
 			case 12:
 				System.out.println(
 						"Ha ganado unas vacaciones de lujo en Iziz, adelántase hacia la casilla, si pasa sobre GO, cóbrense $200");
-				if(posJugador2 > 12) {
-					posJugador2 = 12;
+				if(posJugador2 > 11) {
+					posJugador2 = 11;
 					System.out.println("Pasa por GO, recibe $200 Wupiupis");
 					cuentaJugador2 += 200;
 					InfoCasilla(posJugador2, 2);
 				} else {
-					posJugador2 = 12;
+					posJugador2 = 11;
 					InfoCasilla(posJugador2, 2);
 				}
 				break;
 			case 13:
 				System.out.println(
 						"Ha sido obligado a huir tu ciudad, avánzase hasta el Palacio de Jabba, si pasa sobre GO, cóbrense $200");
-				if(posJugador2 > 25) {
-					posJugador2 = 25;
+				if(posJugador2 > 24) {
+					posJugador2 = 24;
 					System.out.println("Pasa por GO, recibe $200 Wupiupis");
 					cuentaJugador2 += 200;
 					InfoCasilla(posJugador2, 1);
 				} else {
-					posJugador2 = 25;
+					posJugador2 = 24;
 					InfoCasilla(posJugador2, 1);
 				}
 				break;
