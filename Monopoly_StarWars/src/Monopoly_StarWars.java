@@ -65,6 +65,7 @@ public class Monopoly_StarWars {
 				// FIN de TURNO
 				turnoPersonaje1 = false;
 				turnoPersonaje2 = true;
+				ChecarSiEnBancarrota(1);
 				if(!juego) {
 					break;
 				}
@@ -97,6 +98,7 @@ public class Monopoly_StarWars {
 				// FIN de TURNO
 				turnoPersonaje1 = true;
 				turnoPersonaje2 = false;
+				ChecarSiEnBancarrota(2);
 				if(!juego) {
 					break;
 				}
@@ -112,14 +114,14 @@ public class Monopoly_StarWars {
 	//Estaciones espaciales en posesión
 	public static int CantidadEstaciones(int jugador) {
 		if(jugador==1) {
-			for(int i=5;i<=35;i+=5) {
+			for(int i=5;i<=35;i+=10) {
 				if(propietarioCasilla[i].equals(jugador1)) {
 					cantEstacionesJ1++;
 				}
 			}
 			return cantEstacionesJ1;
 		} else if (jugador == 2) {
-			for(int i=5;i<=35;i+=5) {
+			for(int i=5;i<=35;i+=10) {
 				if(propietarioCasilla[i].equals(jugador2)) {
 					cantEstacionesJ2++;
 				}
@@ -145,13 +147,15 @@ public class Monopoly_StarWars {
 				case 1:
 					for (int i = 0; i < propietarioCasilla.length; i++) {
 						if (propietarioCasilla[i].equals(jugador1)) {
-							System.out.print(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
+							System.out.print("\n" + numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
 									+ numeroCasilla[i]);
 							if(numDeCasasEnCasilla[i]>0) {
 								System.out.println(". Numero de casas en casilla: " + numDeCasasEnCasilla[i]);
+							} else {
+								System.out.println();
 							}
 							numeroDePropiedadJugador++;
-						}
+						} 
 					}
 					break;
 				case 2:
@@ -234,10 +238,12 @@ public class Monopoly_StarWars {
 				case 1:
 					for (int i = 0; i < propietarioCasilla.length; i++) {
 						if (propietarioCasilla[i].equals(jugador2)) {
-							System.out.println(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
+							System.out.print(numeroDePropiedadJugador + ". " + nombreCasilla[i] + ". Numero de casilla: "
 									+ numeroCasilla[i]);
 							if(numDeCasasEnCasilla[i]>0) {
 								System.out.println(". Numero de casas en casilla: " + numDeCasasEnCasilla[i]);
+							} else {
+								System.out.println();
 							}
 							numeroDePropiedadJugador++;
 						}
@@ -675,7 +681,7 @@ public class Monopoly_StarWars {
 						}
 					}
 					if ((posJugador1 != 12) && (posJugador1 != 28) && !((posJugador1 == 5) || (posJugador1 == 15) || (posJugador1 == 25) || (posJugador1 ==35))) {
-						//System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
+						System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
 						if (!propietarioCasilla[posJugador1].equals(jugador1)) {
 							if(numDeCasasEnCasilla[posJugador1] == 0) {
 								System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador1] + " al jugador 2.");
@@ -732,7 +738,7 @@ public class Monopoly_StarWars {
 						}
 					}
 					if ((posJugador2 != 12) && (posJugador2 != 28) && !((posJugador2 == 5) || (posJugador2 == 15) || (posJugador2 == 25) || (posJugador2 ==35))) {
-						// System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
+						System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
 						if (!propietarioCasilla[posJugador2].equals(jugador2)) {
 							if(numDeCasasEnCasilla[posJugador2] == 0) {
 								System.out.println("Se ha pagado $ " + alquilerCasilla[posJugador2] + " al jugador 1.");
@@ -1292,14 +1298,20 @@ public class Monopoly_StarWars {
 		if (jugador == 1) {
 			if (cuentaJugador1 < 0) {
 				Fin();
+				System.out.println("========================================================================");
 				System.out.println("El jugador 1 ha quedado en bancarrota.\nGANA " + jugador2 + " (JUGADOR 2)");
+				System.out.println("========================================================================");
 				juego = false;
+				nuevoTurno = false;
 			}
 		} else if (jugador == 2) {
 			if (cuentaJugador2 < 0) {
 				Fin();
-				System.out.println("El jugador 2 ha quedado en bancarrota.\nGANA " + jugador2 + " (JUGADOR 2)");
+				System.out.println("========================================================================");
+				System.out.println("El jugador 2 ha quedado en bancarrota.\nGANA " + jugador1 + " (JUGADOR 1)");
+				System.out.println("========================================================================");
 				juego = false;
+				nuevoTurno = false;
 			}
 		}
 	}
