@@ -114,6 +114,7 @@ public class Monopoly_StarWars {
 	//Estaciones espaciales en posesión
 	public static int CantidadEstaciones(int jugador) {
 		if(jugador==1) {
+			cantEstacionesJ1 = 0;
 			for(int i=5;i<=35;i+=10) {
 				if(propietarioCasilla[i].equals(jugador1)) {
 					cantEstacionesJ1++;
@@ -121,6 +122,7 @@ public class Monopoly_StarWars {
 			}
 			return cantEstacionesJ1;
 		} else if (jugador == 2) {
+			cantEstacionesJ2 = 0;
 			for(int i=5;i<=35;i+=10) {
 				if(propietarioCasilla[i].equals(jugador2)) {
 					cantEstacionesJ2++;
@@ -672,12 +674,13 @@ public class Monopoly_StarWars {
 					band = false;
 				} else {
 					if ((posJugador1 == 5) || (posJugador1 == 15) || (posJugador1 == 25) || (posJugador1 ==35)) {
+						int estaciones = CantidadEstaciones(2);
 						System.out.println("Propietario: " + propietarioCasilla[posJugador1]);
 						if (!propietarioCasilla[posJugador1].equals(jugador1)) {
-							System.out.println("El propietario cuenta con " + CantidadEstaciones(2) + " estaciones. (Pagar $50 por estacion)");
-							System.out.println("Se ha pagado $ " + (25 * CantidadEstaciones(2)) + " al jugador 2.");
-							cuentaJugador1 -= 25 * CantidadEstaciones(2);
-							cuentaJugador2 += 25 * CantidadEstaciones(2);
+							System.out.println("El propietario cuenta con " + estaciones + " estaciones. (Pagar $50 por estacion)");
+							System.out.println("Se ha pagado $ " + (50 * estaciones) + " al jugador 2.");
+							cuentaJugador1 -= 50 * estaciones;
+							cuentaJugador2 += 50 * estaciones;
 						}
 					}
 					if ((posJugador1 != 12) && (posJugador1 != 28) && !((posJugador1 == 5) || (posJugador1 == 15) || (posJugador1 == 25) || (posJugador1 ==35))) {
@@ -729,12 +732,13 @@ public class Monopoly_StarWars {
 					band = false;
 				} else {
 					if ((posJugador2 == 5) || (posJugador2 == 15) || (posJugador2 == 25) || (posJugador2 ==35)) {
+						int estaciones = CantidadEstaciones(1);
 						System.out.println("Propietario: " + propietarioCasilla[posJugador2]);
 						if (!propietarioCasilla[posJugador2].equals(jugador2)) {
-							System.out.println("El propietario cuenta con " + CantidadEstaciones(1) + " estaciones. (Pagar $50 por estacion)");
-							System.out.println("Se ha pagado $ " + (25 * CantidadEstaciones(1)) + " al jugador 1.");
-							cuentaJugador2 -= 25 * CantidadEstaciones(1);
-							cuentaJugador1 += 25 * CantidadEstaciones(1);
+							System.out.println("El propietario cuenta con " + estaciones + " estaciones. (Pagar $50 por estacion)");
+							System.out.println("Se ha pagado $ " + (50 * estaciones) + " al jugador 1.");
+							cuentaJugador2 -= 50 * estaciones;
+							cuentaJugador1 += 50 * estaciones;
 						}
 					}
 					if ((posJugador2 != 12) && (posJugador2 != 28) && !((posJugador2 == 5) || (posJugador2 == 15) || (posJugador2 == 25) || (posJugador2 ==35))) {
