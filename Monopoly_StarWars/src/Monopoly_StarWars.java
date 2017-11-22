@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Monopoly_StarWars {
+	//Declaración de variables estáticas
 	static String adelante, jugador1, jugador2;
 	static Scanner reader = new Scanner(System.in);
 	static boolean band = false, turnoPersonaje1 = false, turnoPersonaje2 = false, juego = false, vuelta = false,
@@ -33,30 +34,34 @@ public class Monopoly_StarWars {
 	static int[] alquilerCasillaCon2Casa = {0,30,0,60,0,0,90,0,90,100,0,150,0,150,180,0,200,0,200,220,0,250,0,250,300,0,330,330,0,360,0,390,390,0,450,0,0,500,0,600};
 
 	public static void main(String[] args) {
-		
+		//Mostrar bienvenida, escoger personajes
 		Inicio();
 
+		//Empieza el juego
 		while (juego) {
 			if (turnoPersonaje1) {
 				ASCIICambioDeTurno();
 				while (nuevoTurno) {
 					nuevoTurno = false;
 					ChecarSiEnBancarrota(1);
-					System.out
-							.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador1);
+					System.out.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador1);
 					System.out.println("Saldo actual: $" + cuentaJugador1 + " Wupiupis\n");
+					//Checar si jugador está en prisión
 					if(!jugador1EnPrision) {
 						posJugador1 += AvanzarCasillas();
 						posJugador1 = ChecarSiVuelta(posJugador1);
+						//Checar si da vuelta
 						if (vuelta) {
 							cuentaJugador1 += 200;
 							System.out.println("Saldo actual: $" + cuentaJugador1 + " Wupiupis");
 							vuelta = false;
 						}
 					}
+					//Mostrar info de casilla
 					InfoCasilla(posJugador1, 1);
 					ComprarCasilla(1);
 					while (!band) {
+						//Mostrar menú
 						Menu(1);
 					}
 					band = false;
@@ -74,21 +79,24 @@ public class Monopoly_StarWars {
 				while (nuevoTurno) {
 					nuevoTurno = false;
 					ChecarSiEnBancarrota(2);
-					System.out
-							.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador2);
+					System.out.println("\n///////////////////////////////////////////////////////\nTURNO DE " + jugador2);
 					System.out.println("Saldo actual: $" + cuentaJugador2 + " Wupiupis");
+					//Checar si jugador está en prisión
 					if(!jugador2EnPrision) {
 						posJugador2 += AvanzarCasillas();
 						posJugador2 = ChecarSiVuelta(posJugador2);
+						//Checar si vuelta
 						if (vuelta) {
 							cuentaJugador2 += 200;
 							System.out.println("Saldo actual: $" + cuentaJugador2 + " Wupiupis\n");
 							vuelta = false;
 						}
 					}
+					//Mostrar info de casilla
 					InfoCasilla(posJugador2, 2);
 					ComprarCasilla(2);
 					while (!band) {
+						//Mostrar menú
 						Menu(2);
 					}
 					band = false;
@@ -1298,6 +1306,7 @@ public class Monopoly_StarWars {
 		juego = true;
 	}
 	
+	//Checar si el jugador está en numeros rojos, elegir ganador
 	public static void ChecarSiEnBancarrota(int jugador) {
 		if (jugador == 1) {
 			if (cuentaJugador1 < 0) {
@@ -1320,6 +1329,9 @@ public class Monopoly_StarWars {
 		}
 	}
 
+	/*
+	 * 	CARTELES
+	 */
 	public static void ImprimirLogo() {
 		System.out.println("                  ________________.  ___     .______  \n"
 				+ "                 /                | /   \\    |   _  \\\n"
